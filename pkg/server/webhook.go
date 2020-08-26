@@ -534,7 +534,7 @@ func (whsvr *WebhookServer) mutate(req *v1beta1.AdmissionRequest) *v1beta1.Admis
 		reason := GetErrorReason(err)
 		injectionCounter.With(prometheus.Labels{"status": "skipped", "reason": reason, "requested": injectionKey}).Inc()
 		return &v1beta1.AdmissionResponse{
-			Allowed: true,
+			Allowed: err != ErrRequestedSidecarNotFound,
 		}
 	}
 
@@ -590,6 +590,10 @@ func (whsvr *WebhookServer) MutateHandler() http.Handler {
 }
 
 func (whsvr *WebhookServer) healthHandler(w http.ResponseWriter, r *http.Request) {
+	if len(whsvr.Config.Injections) == 0 {
+		http.Error(w, "no injections", http.StatusServiceUnavailable)
+		return
+	}
 	fmt.Fprintf(w, "d|-_-|b 🦄")
 }
 

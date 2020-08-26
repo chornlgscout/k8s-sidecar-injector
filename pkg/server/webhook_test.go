@@ -57,7 +57,7 @@ var (
 
 	// tests to check the mutate() function for correct operation
 	mutationTests = []mutationTest{
-		{name: "missing-sidecar-config", allowed: true, patchExpected: false},
+		{name: "missing-sidecar-config", allowed: false, patchExpected: false},
 		{name: "sidecar-test-1", allowed: true, patchExpected: true},
 		{name: "env-override", allowed: true, patchExpected: true},
 		{name: "service-account", allowed: true, patchExpected: true},
