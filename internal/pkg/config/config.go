@@ -43,8 +43,8 @@ type InjectionConfig struct {
 	HostPID            bool                 `json:"hostPID"`
 	InitContainers     []corev1.Container   `json:"initContainers"`
 	ServiceAccountName string               `json:"serviceAccountName"`
-
-	version string
+	Annotations        map[string]string    `json:"annotations"`
+	version            string
 }
 
 // Config is a struct indicating how a given injection should be configured
@@ -234,6 +234,11 @@ func (base *InjectionConfig) Merge(child *InjectionConfig) error {
 		if !contains {
 			base.Environment = append(base.Environment, cv)
 		}
+	}
+
+	// merge annotations
+	for k, v := range child.Annotations {
+		base.Annotations[k] = v
 	}
 
 	// merge volume mounts
